@@ -13,6 +13,26 @@ Use this project to revise:
 
 ---
 
+## UI Preview
+
+### Evening in Pune
+
+![Pune evening cockpit view](assets/ui-pune-evening.png)
+
+### Freezing snow in Moscow
+
+![Moscow freezing snow view](assets/ui-moscow-snow.png)
+
+### Windy afternoon in Reykjavik
+
+![Reykjavik windy afternoon view](assets/ui-reykjavik-windy.png)
+
+### Cloudy afternoon in London
+
+![London cloudy afternoon view](assets/ui-london-cloudy.png)
+
+---
+
 ## High‑Level Architecture
 
 - **Airflow / Astro**
@@ -64,7 +84,7 @@ Use this DAG when you want to quickly recall:
 - Simple ETL that calls the **Open‑Meteo** forecast API for Berlin:
   - Endpoint similar to  
     `https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m`
-    (see [Open‑Meteo docs](https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m)).
+    (see [Open‑Meteo assets](https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m)).
 - Steps:
   - **Extract**: call the API and fetch hourly temperatures.
   - **Transform**:
