@@ -1,0 +1,9 @@
+# Astro Runtime includes the following pre-installed providers packages: https://www.astronomer.io/docs/astro/runtime-image-architecture#provider-packages
+
+# Postgres provider needed for `PostgresHook` in `weather_etl.py`
+apache-airflow-providers-postgres
+
+# FastAPI backend and Postgres client (for UI API layer)
+fastapi
+uvicorn[standard]
+psycopg2-binary
