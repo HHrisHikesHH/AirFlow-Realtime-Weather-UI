@@ -1,0 +1,638 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-header {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
+  background: radial-gradient(circle at top, #0f172a, #020617 55%);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.subtitle {
+  margin-top: 0.25rem;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.app-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.city-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.city-selector select {
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.35rem;
+  border: 1px solid #475569;
+  background: #020617;
+  color: #e5e7eb;
+}
+
+.info-panel {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  font-size: 0.9rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.error {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.4rem;
+  background: rgba(127, 29, 29, 0.8);
+  border: 1px solid #fecaca;
+  color: #fee2e2;
+  font-size: 0.85rem;
+}
+
+.pilot-comment {
+  margin-top: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.7rem;
+  background: radial-gradient(circle at top left, #1e293b, #020617);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.8);
+  font-size: 0.85rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.pilot-comment-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #a5b4fc;
+}
+
+.pilot-comment-text {
+  line-height: 1.5;
+}
+
+.pilot-comment-meta {
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+.scene-container {
+  position: relative;
+}
+
+.plane-scene {
+  position: relative;
+  height: 360px;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.9);
+}
+
+.sky-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at top,
+    rgba(248, 250, 252, 0.25),
+    transparent 55%
+  );
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.plane {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  transform-origin: center;
+  font-size: 3rem;
+  filter: drop-shadow(0 8px 10px rgba(15, 23, 42, 0.7));
+  transition: transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -40px;
+  height: 120px;
+  background: linear-gradient(to top, #16a34a, #166534 30%, transparent 70%);
+  filter: blur(2px);
+}
+
+/* Cockpit + pilot */
+.cockpit {
+  position: relative;
+  width: 140px;
+  height: 120px;
+  border-radius: 70px 70px 20px 20px;
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), #020617);
+  border: 2px solid rgba(148, 163, 184, 0.9);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pilot {
+  position: relative;
+  width: 80px;
+  height: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  transform-origin: center bottom;
+  animation: pilot-idle 3s ease-in-out infinite;
+}
+
+.pilot-body {
+  width: 70px;
+  height: 60px;
+  border-radius: 40px 40px 20px 20px;
+  background: linear-gradient(to bottom, #0f172a, #1e293b);
+  position: relative;
+}
+
+.pilot-head {
+  position: absolute;
+  top: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #fed7aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 0 rgba(148, 92, 57, 0.5);
+}
+
+.pilot-face {
+  position: absolute;
+  inset: 8px 6px 10px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.pilot-harness {
+  position: absolute;
+  inset: 8px 18px;
+  border-radius: 20px;
+  border: 3px solid rgba(15, 23, 42, 0.9);
+}
+
+.pilot-gear-belt {
+  position: absolute;
+  bottom: 4px;
+  left: 10px;
+  right: 10px;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #1f2937, #e5e7eb, #1f2937);
+  opacity: 0.85;
+}
+
+.pilot-eyes::before,
+.pilot-eyes::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #111827;
+}
+
+.pilot-eyes::before {
+  left: 14px;
+}
+
+.pilot-eyes::after {
+  right: 14px;
+}
+
+.pilot-mouth {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  width: 18px;
+  height: 8px;
+  transform: translateX(-50%);
+  border-radius: 0 0 12px 12px;
+  border-bottom: 3px solid #b91c1c;
+}
+
+/* Helmet + goggles + gear details */
+.pilot-helmet {
+  position: absolute;
+  top: -6px;
+  left: 4px;
+  right: 4px;
+  height: 22px;
+  border-radius: 999px 999px 40px 40px;
+  background: linear-gradient(to bottom, #0f172a, #111827);
+  box-shadow: 0 2px 0 rgba(15, 23, 42, 0.8);
+}
+
+.pilot-goggles {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  right: 8px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.9), #020617);
+  box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.7);
+}
+
+.pilot-goggles::before,
+.pilot-goggles::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  width: 40%;
+  height: 8px;
+  border-radius: 6px;
+  background: linear-gradient(to right, #e5e7eb, #9ca3af);
+  opacity: 0.9;
+}
+
+.pilot-goggles::before {
+  left: 6px;
+}
+
+.pilot-goggles::after {
+  right: 6px;
+}
+
+.pilot-scarf {
+  position: absolute;
+  bottom: 2px;
+  left: -4px;
+  width: 36px;
+  height: 14px;
+  border-radius: 999px;
+  background: linear-gradient(to right, #0369a1, #0ea5e9);
+  transform-origin: left center;
+  opacity: 0;
+}
+
+.pilot-sweat {
+  position: absolute;
+  right: 6px;
+  top: 20px;
+  width: 6px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #38bdf8, transparent);
+  opacity: 0;
+}
+
+/* Mood variations */
+.pilot--mood-happy .pilot-mouth {
+  border-bottom-color: #16a34a;
+}
+
+.pilot--mood-terrified .pilot-mouth {
+  height: 14px;
+  border-radius: 12px;
+  border: 3px solid #b91c1c;
+}
+
+.pilot--mood-uncomfortable .pilot-mouth {
+  border-bottom-color: #ea580c;
+}
+
+.pilot--mood-worried .pilot-mouth {
+  border-bottom-color: #eab308;
+}
+
+/* Outfit variations */
+.pilot--outfit-cold .pilot-body {
+  background: linear-gradient(to bottom, #0f172a, #1d4ed8);
+}
+
+.pilot--outfit-normal .pilot-body {
+  background: linear-gradient(to bottom, #0f172a, #334155);
+}
+
+.pilot--outfit-hot .pilot-body {
+  background: linear-gradient(to bottom, #b91c1c, #f97316);
+}
+
+.pilot--outfit-extreme .pilot-body {
+  background: linear-gradient(to bottom, #f97316, #facc15);
+}
+
+/* Cold: show scarf waving */
+.pilot--outfit-cold .pilot-scarf {
+  opacity: 1;
+  animation: scarf-wave 2.4s ease-in-out infinite;
+}
+
+/* Hot / extreme: sweat drop */
+.pilot--outfit-hot .pilot-sweat,
+.pilot--outfit-extreme .pilot-sweat {
+  opacity: 1;
+  animation: sweat-drip 1.6s ease-in-out infinite;
+}
+
+/* Wind-driven sway */
+.pilot--wind-low {
+  animation-duration: 2.6s;
+}
+
+.pilot--wind-med {
+  animation-duration: 1.8s;
+}
+
+.pilot--wind-high {
+  animation-duration: 1.2s;
+  animation-name: pilot-shake;
+}
+
+@keyframes pilot-idle {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes pilot-shake {
+  0%,
+  100% {
+    transform: translate(-2px, 0px) rotate(-2deg);
+  }
+  50% {
+    transform: translate(3px, -3px) rotate(3deg);
+  }
+}
+
+@keyframes scarf-wave {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-12deg);
+  }
+}
+
+@keyframes sweat-drip {
+  0% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+}
+
+/* Cloud layers */
+.cloud-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cloud-layer--back::before,
+.cloud-layer--front::before {
+  content: "";
+  position: absolute;
+  top: 15%;
+  left: -20%;
+  width: 160%;
+  height: 80px;
+  background: radial-gradient(circle at 20% 40%, #e5e7eb 0%, transparent 55%),
+    radial-gradient(circle at 60% 0%, #cbd5f5 0%, transparent 55%),
+    radial-gradient(circle at 90% 60%, #e5e7eb 0%, transparent 55%);
+  opacity: 0;
+  transform: translateX(0);
+}
+
+.cloud-layer--front::before {
+  top: 25%;
+  height: 90px;
+}
+
+.cloud-layer--cloudy::before,
+.cloud-layer--rain::before,
+.cloud-layer--snow::before,
+.cloud-layer--fog::before,
+.cloud-layer--storm::before {
+  opacity: 0.5;
+  animation: clouds-drift 40s linear infinite;
+}
+
+@keyframes clouds-drift {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
+/* Rain */
+.rain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom right,
+    rgba(148, 163, 184, 0.6) 0%,
+    transparent 60%
+  );
+  background-size: 2px 18px;
+  animation: rain-fall 0.5s linear infinite;
+  opacity: 0.6;
+}
+
+.rain--med {
+  opacity: 0.85;
+}
+
+.rain--high {
+  opacity: 1;
+}
+
+@keyframes rain-fall {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -10px 30px;
+  }
+}
+
+/* Snow */
+.snow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+  background-size: 12px 18px;
+  animation: snow-fall 2.8s linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes snow-fall {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -8px 28px;
+  }
+}
+
+/* Storm flash */
+.storm-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at top,
+    rgba(250, 250, 250, 0.8),
+    transparent 65%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: storm-flash 5s linear infinite;
+}
+
+@keyframes storm-flash {
+  0%,
+  92%,
+  100% {
+    opacity: 0;
+  }
+  94% {
+    opacity: 0.9;
+  }
+  96% {
+    opacity: 0.2;
+  }
+}
+
+/* Wind streaks */
+.wind-streaks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(148, 163, 184, 0.4) 40%,
+    transparent 80%
+  );
+  background-size: 140px 4px;
+  opacity: 0;
+}
+
+.wind-streaks--low {
+  opacity: 0.35;
+  animation: wind-move 3.6s linear infinite;
+}
+
+.wind-streaks--med {
+  opacity: 0.55;
+  animation: wind-move 2.4s linear infinite;
+}
+
+.wind-streaks--high {
+  opacity: 0.9;
+  animation: wind-move 1.4s linear infinite;
+}
+
+@keyframes wind-move {
+  0% {
+    background-position: 0 30%;
+  }
+  100% {
+    background-position: 160px 30%;
+  }
+}
+
+/* Time-of-day themed backgrounds */
+.bg-deep-night {
+  background: radial-gradient(circle at top, #0f172a, #020617 55%, #000 100%);
+}
+
+.bg-pre-dawn {
+  background: linear-gradient(to top, #020617 0%, #0f172a 40%, #1d3557 100%);
+}
+
+.bg-dawn {
+  background: linear-gradient(to top, #0f172a 0%, #f97316 40%, #fde68a 100%);
+}
+
+.bg-morning {
+  background: linear-gradient(to top, #0ea5e9 0%, #38bdf8 45%, #e0f2fe 100%);
+}
+
+.bg-afternoon {
+  background: linear-gradient(to top, #0284c7 0%, #38bdf8 45%, #bae6fd 100%);
+}
+
+.bg-late-afternoon {
+  background: linear-gradient(to top, #0f172a 0%, #f97316 40%, #fed7aa 100%);
+}
+
+.bg-evening {
+  background: linear-gradient(to top, #1e293b 0%, #7c2d12 40%, #fec89a 100%);
+}
+
+.bg-late-night {
+  background: radial-gradient(circle at top, #020617, #020617 60%, #000 100%);
+}
+
+@media (max-width: 900px) {
+  .app-main {
+    grid-template-columns: 1fr;
+  }
+
+  .scene-container {
+    order: -1;
+  }
+}
+
+
